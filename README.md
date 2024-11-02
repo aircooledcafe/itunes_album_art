@@ -7,7 +7,7 @@ So I discovered iTunes had an API where you just grab alabum art from. This led 
 **Usage**
 
 Download script and make execuable:
-`./getart.py`
+`./get_album_art.py`
 
 Or if you are on a system without Python in /usr/bin:
 `python get_album_art.py`
