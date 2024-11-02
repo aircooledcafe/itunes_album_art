@@ -10,6 +10,6 @@ Download script and make execuable:
 `./getart.py`
 
 Or if you are on a system without Python in /usr/bin:
-`python getart.py`
+`python get_album_art.py`
 
 The script does the rest asking for artist, album, and allowing you to choose from a list of results.
