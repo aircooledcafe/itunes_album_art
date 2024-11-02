@@ -2,6 +2,7 @@
 import requests
 import json
 import sys
+import re
 
 artist_name = input("What artis are you searching for?: ")
 album_name = input("Which album are you searching for?: ")
@@ -53,9 +54,9 @@ def get_album_art(album_name, artist_name):
         print(f"\nYou selected: {data['results'][int(selection)]['artistName']} - {data['results'][int(selection)]['collectionName']}")
         confirm = input("\n Is this correct (Y/N)? ")
     else:
-        # Retrieve the formatted artist name and album name to create a filename
-        real_artist = data['results'][selection]['artistName']
-        real_album = data['results'][selection]['collectionName']
+        # Retrieve the formatted artist name and album name to create a filename (replacing any /)
+        real_artist = re.sub('[/]', '-', data['results'][selection]['artistName'])
+        real_album = re.sub('[/]', '-', data['results'][selection]['collectionName'])
         # Retrieve the low resolutaion artwork url
         album_art_url = data['results'][selection]['artworkUrl100']
         # Replace '100x100' with a higher resolution like '2000x2000' will grab higherst available resolution
