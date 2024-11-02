@@ -6,6 +6,11 @@ import sys
 artist_name = input("What artis are you searching for?: ")
 album_name = input("Which album are you searching for?: ")
 
+#def confirm_choice():
+#    print(f"\nYou selected: {data['results'][int(selection)]['artistName']} - {data['results'][int(selection)]['collectionName']}")
+#    confirm = input("\n Is this correct (Y/N)? ")
+#    return confirm
+
 def get_album_art(album_name, artist_name):
     """
     Fetches album art URL from the iTunes Search API and downloads it.
@@ -25,19 +30,33 @@ def get_album_art(album_name, artist_name):
     # Collects the jsonb response and stores it in a variable
     response = requests.get(url)
     data = json.loads(response.text)
-    #print(data)
     
-    # List the album match results returned from the iTunes API:
-    i = 0
-    while i < data['resultCount']:
-        print(f"Result: {str(i)} {data['results'][i]['artistName']} - {data['results'][i]['collectionName']}")
-        i += 1
-
-    selection = int(input("Which album to you want to retreive: "))
-    print(f"You selected: {data['results'][int(selection)]['artistName']} - {data['results'][int(selection)]['collectionName']}")
-    real_artist = data['results'][selection]['artistName']
-    real_album = data['results'][selection]['collectionName']
+    print(f"\nAlbums matching your search:\n")
+    
+    # List the album match results returned from the iTunes API, or advise none available and exit:
     if data['resultCount'] > 0:
+        i = 0
+        while i < data['resultCount']:
+            print(f"Result: {str(i)} {data['results'][i]['artistName']} - {data['results'][i]['collectionName']}")
+            i += 1
+    else:
+        print("No results found sorry.")
+        exit()
+
+    confirm = ""
+    # Function to check for valid results and download the art
+
+
+    while confirm.lower() != "y":
+        # Ask the user to select the appropraite album and check selection is correct
+        selection = int(input("\nWhich album to you want to retreive (provide the number): "))
+        print(f"\nYou selected: {data['results'][int(selection)]['artistName']} - {data['results'][int(selection)]['collectionName']}")
+        confirm = input("\n Is this correct (Y/N)? ")
+    else:
+        # Retrieve the formatted artist name and album name to create a filename
+        real_artist = data['results'][selection]['artistName']
+        real_album = data['results'][selection]['collectionName']
+        # Retrieve the low resolutaion artwork url
         album_art_url = data['results'][selection]['artworkUrl100']
         # Replace '100x100' with a higher resolution like '2000x2000' will grab higherst available resolution
         high_res_url = album_art_url.replace('100x100', '2000x2000')
@@ -55,7 +74,7 @@ def get_album_art(album_name, artist_name):
             print("File name: " + filename)
         else:
             print("Failed to download album art.")
-    else:
-        print("Album not found.")
+#    else:
+#        print("Album not found.")
 
 get_album_art(album_name, artist_name)
