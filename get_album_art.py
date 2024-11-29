@@ -69,10 +69,13 @@ def get_album_art():
     # Getting the album art
     while confirmation not in ("y", "Y"):
         # Ask the user to select the appropraite album and check selection is correct
-        selection = list(input("\nWhich album to you want to retreive (provide the numbers): "))
+        user_input = input("\nWhich album(s) to you want to retreive (provide a comma seperated list of number(s): ")
+        selection = user_input.split(',')
+
         for number in selection:
             print(f"\nYou selected: {data['results'][int(number)]['artistName']} - {data['results'][int(number)]['collectionName']}")
         confirmation = input("\nIs this correct (Y/N)? ")
+ 
     else:
         for number in selection:
             # Retrieve the formatted artist name and album name to create a filename (replacing any /)
