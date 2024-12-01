@@ -13,4 +13,7 @@ Or if you are on a system without Python in /usr/bin:
 `python get_album_art.py`  
   
 The script does the rest asking the user for the desired artist and album title (if required can just get all albums if desired).  
-Then provides a multiple choise list of results to choose from album, to choose the desired artwork to download.  
+Then provides a multiple choice list of results to choose the desired artwork to download.  
+
+### To Do
+- Error checking, curenlty erroros out on incorrect type or value in selection
