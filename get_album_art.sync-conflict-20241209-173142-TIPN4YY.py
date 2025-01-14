@@ -5,37 +5,34 @@ import sys
 import re
 
 
+artist_name = None
+album_name = None
 confirmation = None
 data = None
 
 def user_search_query():
+    global artist_name, album_name
     artist_name = input("What artist are you searching for?: ")
     album_name = input("Which album are you searching for (leave blank to get all results?: ")
-    return artist_name, album_name
 
 def itunes_api_call(artist_name, album_name):
     # Take the two input arguments and constructs the request URL
     search_term = f"{artist_name} {album_name}"
-    url = f"https://itunes.apple.com/search?term={search_term}&entity=album&limit=50"
+    url = f"https://itunes.apple.com/search?term={search_term}&entity=album&limit=200"
     response = requests.get(url)
     return json.loads(response.text)
 
-def graceful_exit():
-    print("Good bye!")
-    exit()
-
-def get_album_art(artist_name, album_name):
-    global confirmation, data
+def get_album_art():
+    global artist_name, album_name, confirmation, data
 
     data = itunes_api_call(artist_name, album_name)
 
     # List the album results returned from the iTunes API, if none ask if you want to try another search:
     while data['resultCount'] == 0:
-        #try_again = input("No results found sorry. Do you wnat to try another search (Y/N)?")
-        #if try_again.lower() == 'y':
-        if input("No results found sorry. Do you wnat to try another search (Y/N)?") in ("y","Y"):
-            user_input = user_search_query()
-            data = itunes_api_call(user_input[0], user_input[1])
+        try_again = input("No results found sorry. Do you wnat to try another search (Y/N)?")
+        if try_again.lower() == 'y':
+            user_search_query()
+            data = itunes_api_call(artist_name, album_name)
         else:
             print("Good bye.")
             exit()
@@ -48,7 +45,7 @@ def get_album_art(artist_name, album_name):
 
     # Getting the album art
     while confirmation not in ("y", "Y"):
-        # Ask the user to select the appropraite albums and checks selection is correct
+        # Ask the user to select the appropraite albums and check selection is correct
         user_album_selection = input("\nWhich album(s) to you want to retreive (provide a comma seperated list of number(s): ")
         selection = user_album_selection.split(',')
         print("\nPlease confirm these are the album covers you want to download:")
@@ -57,7 +54,7 @@ def get_album_art(artist_name, album_name):
             print(f"{number} - {data['results'][int(number)]['artistName']} - {data['results'][int(number)]['collectionName']} - ({release_year})")
         confirmation = input("\nIs this correct (Y/N)? ")
     else:
-        # Loops through the list of selected albums and downloads the artwork
+        # Loops through the list of selected album and downloads the artwork
         for number in selection:
             # Retrieve the formatted artist name and album name to create a filename (replacing any '/' thanks AC/DC)
             real_artist = re.sub('[/]', '-', data['results'][int(number)]['artistName'])
@@ -75,11 +72,11 @@ def get_album_art(artist_name, album_name):
                 with open(filename, 'wb') as f:
                     for chunk in image_response.iter_content(1024):
                         f.write(chunk)
-                print(f"Artwork {number} downloaded: {filename}")
+                print("\nAlbum art downloaded successfully!")
+                print("File name: " + filename)
             else:
-                print(f"Failed to download artwork {number} please try again.")
+                print("Failed to download album art.")
 
 
-user_input = user_search_query()
-print(user_input)
-get_album_art(user_input[0], user_input[1])
+user_search_query()
+get_album_art()
