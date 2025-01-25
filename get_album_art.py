@@ -82,5 +82,4 @@ def get_album_art(artist_name, album_name):
 
 
 user_input = user_search_query()
-print(user_input)
 get_album_art(user_input[0], user_input[1])
