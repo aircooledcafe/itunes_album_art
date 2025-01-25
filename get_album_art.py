@@ -75,7 +75,8 @@ def get_album_art(artist_name, album_name):
                 with open(filename, 'wb') as f:
                     for chunk in image_response.iter_content(1024):
                         f.write(chunk)
-                print(f"Artwork {number} downloaded: {filename}")
+                print(f"\nAlbum art {number} downloaded successfully!")
+                print(f"File name: {filename}")
             else:
                 print(f"Failed to download artwork {number} please try again.")
 
